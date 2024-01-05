@@ -87,4 +87,4 @@ Para executar este projeto em desenvolvimento é necessário seguir os passos ab
 
 # Como rodar em produção
 - Buildar o projeto com `docker build --network host -t your-nestjs-app .`;
-- Subir a plataforma com `docker run --network host -p 3000:3000 -d your-nestjs-app`.
+- Subir a plataforma com `docker run --network host -d your-nestjs-app`.
