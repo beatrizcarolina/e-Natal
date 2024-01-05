@@ -10,22 +10,22 @@ Este projeto é uma REST API para atender a aplicação de envio de e-books como
 Para cada entidade foi realizado um CRUD:
 
 ### CRUD de Ebooks [Create | Read | Update | Delete]
-- POST `\ebooks`: Cria um novo e-book. Recebe *title*, *author*, *description* e *pdf* pelo body. A combinação de título e autor não podem ser iguais, caso isso aconteça, um erro 409 é retornado. A estrutura esperada para um e-book é:
+- POST `/ebooks`: Cria um novo e-book. Recebe *title*, *author*, *description* e *pdf* pelo body. O campo *pdf* é um arquivo PDF convertido para base64 em formato de string. A combinação de título e autor não podem ser iguais, caso isso aconteça, um erro 409 é retornado. A estrutura esperada para um e-book é:
 ```
 {
  "title": string
  "author": string
  "description": string (opcional)
- "pdf": string
+ "pdf": string (base-64)
 }
 ```
-- GET `\ebooks`: Retorna todos os ebooks encontrados.
-- GET `\ebooks\:id`: Busca um ebook específico dado um id. Se não for encontrato, retorna um erro 404.
-- PUT `\ebooks\:id`: Atualiza os dados de um e-book dado o seu id e os campos enviados. A combinação de título e autor não pode ser de um e-book já existente, caso isso aconteça, um erro 409 é retornado. O conflito só ocorrerá caso essa combinação pertença a outro e-book. O administrador pode atualizar qualquer propriedade, a estrutura esperada para um e-book é a mesma do POST.
-- DELETE `\ebooks\:id`: Deleta um e-book dado o seu id. Se o e-book não existir, o erro 404 é retornado.
+- GET `/ebooks`: Retorna todos os ebooks encontrados.
+- GET `/ebooks/:id`: Busca um ebook específico dado um id. Se não for encontrato, retorna um erro 404.
+- PUT `/ebooks/:id`: Atualiza os dados de um e-book dado o seu id e os campos enviados. A combinação de título e autor não pode ser de um e-book já existente, caso isso aconteça, um erro 409 é retornado. O conflito só ocorrerá caso essa combinação pertença a outro e-book. O administrador pode atualizar qualquer propriedade, a estrutura esperada para um e-book é a mesma do POST.
+- DELETE `/ebooks/:id`: Deleta um e-book dado o seu id. Se o e-book não existir, o erro 404 é retornado.
 
 ### CRUD de Usuários [Create | Read | Update | Delete]
-- POST `\users`: Cria um novo usuário. Recebe *name*, *email* e *ebooks* pelo body. Os usuários não podem ter emails iguais, caso isso aconteça, um erro 409 é retornado. A estrutura esperada para um usuário é:
+- POST `/users`: Cria um novo usuário. Recebe *name*, *email* e *ebooks* pelo body. Os usuários não podem ter emails iguais, caso isso aconteça, um erro 409 é retornado. A estrutura esperada para um usuário é:
 ```
 {
  "name": string
@@ -33,14 +33,14 @@ Para cada entidade foi realizado um CRUD:
  "ebooks": number[]
 }
 ```
-- GET `\users`: Retorna todos os usuários encontrados.
-- GET `\users\:id`: Busca um usuário específico dado um id. Se não for encontrato, retorna um erro 404.
-- PUT `\users\:id`: Atualiza os dados de um usuário dado o seu id e os campos enviados. Se o id não corresponder a nenhum usuário, o erro 404 é retornado. A estrutura esperada para um usuário é a mesma do POST. Ao editar os e-books da sua lista de desejos, a lista anterior é substituída pela atual.
-- DELETE `\users\:id`: Deleta um usuário dado o seu id. Se o usuário não existir, o erro 404 é retornado.
+- GET `/users`: Retorna todos os usuários encontrados.
+- GET `/users/:id`: Busca um usuário específico dado um id. Se não for encontrato, retorna um erro 404.
+- PUT `/users/:id`: Atualiza os dados de um usuário dado o seu id e os campos enviados. Se o id não corresponder a nenhum usuário, o erro 404 é retornado. A estrutura esperada para um usuário é a mesma do POST. Ao editar os e-books da sua lista de desejos, a lista anterior é substituída pela atual.
+- DELETE `/users/:id`: Deleta um usuário dado o seu id. Se o usuário não existir, o erro 404 é retornado.
 
 As rotas POST, PUT e DELETE de e-book, e DELETE de usuários são autenticadas, portanto apenas o administrador pode usá-las. A autenticação do administrador é feita através da rota:
 
-- POST `\sign-in`: Loga o administrador. Recebe *username* e *password* que são passados pelo `.env` através das variáveis `ADMIN_USER` e `PASSWORD`. Gera um token que permite acesso às rotas autenticadas.
+- POST `/sign-in`: Loga o administrador. Recebe *username* e *password* que são passados pelo `.env` através das variáveis `ADMIN_USER` e `PASSWORD`. Gera um token que permite acesso às rotas autenticadas.
 
 O módulo de `scheduler` é responsável pelo envio dos emails a partir das 00:00h do dia 25 de Dezembro de cada ano.
 
@@ -63,6 +63,7 @@ Para executar este projeto em desenvolvimento é necessário seguir os passos ab
 - Clonar o repositório;
 - Baixar as dependências necessárias com o comando: `npm install`;
 - Em seguida, criar o arquivo `.env` com base no `.env.example`;
+- Para poder executar os testes, será necessário criar um outro arquivo `.env.test` com base no `.env.example`;
 - Este arquivo `.env` é composto pelas seguintes propriedades:
 ```
   DATABASE_URL="postgresql://postgres..."
@@ -84,6 +85,14 @@ Para executar este projeto em desenvolvimento é necessário seguir os passos ab
 
 - Será necessário executar o Prisma para criar o banco de dados e as tabelas necessárias. Para isso, execute o comando: `npx prisma migrate dev`;
 - Para rodar o projeto em desenvolvimento, execute o comando `npm run start:dev`.
+
+### Ferramenta para testes de desenvolvimento
+Na raíz do projeto consta o arquivo `pdf_base.js` destinado a converter o pdf dos e-books no formato esperado pelo banco de dados, e após isso inseri-los.
+
+Basta rodar o seguinte comando no terminal:
+```
+node pdf_base.js "PATH_PDF" "TITLE" "AUTHOR" "TOKEN"
+```
 
 # Como rodar em produção
 - Buildar o projeto com `docker build --network host -t your-nestjs-app .`;
