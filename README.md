@@ -2,7 +2,7 @@
 Aplicação de back-end para o desafio técnico da vaga de desenvolvedor back-end júnior. Nesta aplicação é possível gerenciar o back-end do sistema E-Natal, que ajuda o Sr. Santa Claus na produção e entrega de presentes, enviando e-books como presentes natalinos via e-mail através de requisições HTTP(s) seguindo a convenção REST.
 
 # Demo
-[Link do Deploy](postgres://bypwemvp:GEUcc9juPV2EW6Ekvvk3CzXNePoIUHT3@castor.db.elephantsql.com/bypwemvp)
+URL para se conectar ao banco de dados: postgres://bypwemvp:GEUcc9juPV2EW6Ekvvk3CzXNePoIUHT3@castor.db.elephantsql.com/bypwemvp
 
 # Como funciona?
 Este projeto é uma REST API para atender a aplicação de envio de e-books como presentes natalinos via e-mail para o sistema E-Natal. Ela possui duas entidates: `users` e `ebooks`. As características destas entidades estão nos arquivos da pasta `dto` de cada módulo.
