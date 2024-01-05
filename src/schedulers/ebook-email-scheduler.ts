@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import * as nodemailer from 'nodemailer';
 import * as process from "process";
-import { EbooksRepository } from 'src/ebooks/ebooks.repository';
-import { UsersRepository } from 'src/users/users.repository';
+import { EbooksRepository } from '../ebooks/ebooks.repository';
+import { UsersRepository } from '../users/users.repository';
 
 @Injectable()
 export class EbookEmailScheduler {

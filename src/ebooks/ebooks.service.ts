@@ -11,7 +11,6 @@ export class EbooksService {
   async create(createEbookDto: CreateEbookDto) {
     const { title, author } = createEbookDto;
     const ebook = await this.repository.findByTitleAndAuthor(title, author);
-    console.log(ebook);
     if(ebook.length > 0) throw new HttpException(`Ebook with this information already existis`, HttpStatus.CONFLICT);
 
     return this.repository.create(createEbookDto);
