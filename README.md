@@ -63,7 +63,7 @@ Para executar este projeto em desenvolvimento é necessário seguir os passos ab
 - Clonar o repositório;
 - Baixar as dependências necessárias com o comando: `npm install`;
 - Em seguida, criar o arquivo `.env` com base no `.env.example`;
-- - Este arquivo `.env` é composto pelas seguintes propriedades:
+- Este arquivo `.env` é composto pelas seguintes propriedades:
 ```
   DATABASE_URL="postgresql://postgres..."
   JWT_SECRET="jwt_secret"
@@ -73,7 +73,7 @@ Para executar este projeto em desenvolvimento é necessário seguir os passos ab
   
   EMAIL_USER="user@mail.com"
   EMAIL_PASSWORD="password"
-  EMAIL_HOST="smtp.ethereal.email"
+  EMAIL_HOST="smtp.host.com"
   EMAIL_PORT="587"
 ```
 - As propriedades possuem seus usos individuais:
