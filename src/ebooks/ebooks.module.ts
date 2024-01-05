@@ -7,5 +7,6 @@ import { AuthModule } from 'src/auth/auth.module';
 @Module({
   controllers: [EbooksController],
   providers: [EbooksService, EbooksRepository],
+  exports: [EbooksRepository],
 })
 export class EbooksModule {}
