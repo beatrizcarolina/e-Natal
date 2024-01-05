@@ -1,73 +1,90 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# E-Natal
+Aplicação de back-end para o desafio técnico da vaga de desenvolvedor back-end júnior. Nesta aplicação é possível gerenciar o back-end do sistema E-Natal, que ajuda o Sr. Santa Claus na produção e entrega de presentes, enviando e-books como presentes natalinos via e-mail através de requisições HTTP(s) seguindo a convenção REST.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# Demo
+[Deploy do Projeto]()
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# Como funciona?
+Este projeto é uma REST API para atender a aplicação de envio de e-books como presentes natalinos via e-mail para o sistema E-Natal. Ela possui duas entidates: `users` e `ebooks`. As características destas entidades estão nos arquivos da pasta `dto` de cada módulo.
 
-## Description
+Para cada entidade foi realizado um CRUD:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
+### CRUD de Ebooks [Create | Read | Update | Delete]
+- POST `\ebooks`: Cria um novo e-book. Recebe *title*, *author*, *description* e *pdf* pelo body. A combinação de título e autor não podem ser iguais, caso isso aconteça, um erro 409 é retornado. A estrutura esperada para um e-book é:
 ```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+{
+ "title": string
+ "author": string
+ "description": string (opcional)
+ "pdf": string
+}
 ```
+- GET `\ebooks`: Retorna todos os ebooks encontrados.
+- GET `\ebooks\:id`: Busca um ebook específico dado um id. Se não for encontrato, retorna um erro 404.
+- PUT `\ebooks\:id`: Atualiza os dados de um e-book dado o seu id e os campos enviados. A combinação de título e autor não pode ser de um e-book já existente, caso isso aconteça, um erro 409 é retornado. O conflito só ocorrerá caso essa combinação pertença a outro e-book. O administrador pode atualizar qualquer propriedade, a estrutura esperada para um e-book é a mesma do POST.
+- DELETE `\ebooks\:id`: Deleta um e-book dado o seu id. Se o e-book não existir, o erro 404 é retornado.
 
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+### CRUD de Usuários [Create | Read | Update | Delete]
+- POST `\users`: Cria um novo usuário. Recebe *name*, *email* e *ebooks* pelo body. Os usuários não podem ter emails iguais, caso isso aconteça, um erro 409 é retornado. A estrutura esperada para um usuário é:
 ```
+{
+ "name": string
+ "email": string
+ "ebooks": number[]
+}
+```
+- GET `\users`: Retorna todos os usuários encontrados.
+- GET `\users\:id`: Busca um usuário específico dado um id. Se não for encontrato, retorna um erro 404.
+- PUT `\users\:id`: Atualiza os dados de um usuário dado o seu id e os campos enviados. Se o id não corresponder a nenhum usuário, o erro 404 é retornado. A estrutura esperada para um usuário é a mesma do POST. Ao editar os e-books da sua lista de desejos, a lista anterior é substituída pela atual.
+- DELETE `\users\:id`: Deleta um usuário dado o seu id. Se o usuário não existir, o erro 404 é retornado.
 
-## Support
+As rotas POST, PUT e DELETE de e-book, e DELETE de usuários são autenticadas, portanto apenas o administrador pode usá-las. A autenticação do administrador é feita através da rota:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- POST `\sign-in`: Loga o administrador. Recebe *username* e *password* que são passados pelo `.env` através das variáveis `ADMIN_USER` e `PASSWORD`. Gera um token que permite acesso às rotas autenticadas.
 
-## Stay in touch
+O módulo de `scheduler` é responsável pelo envio dos emails a partir das 00:00h do dia 25 de Dezembro de cada ano.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Motivação
+Este projeto foi desenvolvido para praticar a construção de uma REST API usando o ecossistema Node e Nest junto com as tecnologias TypeScript e Prisma.
 
-## License
+# Tecnologias Utilizadas
+- Node (versão 16.17.0);
+- Nest;
+- TypeScript;
+- Prisma;
+- Postgres;
+- JWT;
+- Nodemailer;
+- Schedule.
 
-Nest is [MIT licensed](LICENSE).
+# Como rodar em desenvolvimento
+Para executar este projeto em desenvolvimento é necessário seguir os passos abaixo:
+
+- Clonar o repositório;
+- Baixar as dependências necessárias com o comando: `npm install`;
+- Em seguida, criar o arquivo `.env` com base no `.env.example`;
+- - Este arquivo `.env` é composto pelas seguintes propriedades:
+```
+  DATABASE_URL="postgresql://postgres..."
+  JWT_SECRET="jwt_secret"
+  
+  ADMIN_USER="username"
+  PASSWORD="password"
+  
+  EMAIL_USER="user@mail.com"
+  EMAIL_PASSWORD="password"
+  EMAIL_HOST="smtp.ethereal.email"
+  EMAIL_PORT="587"
+```
+- As propriedades possuem seus usos individuais:
+  - `DATABASE_URL` é usada para fazer a conexão com o banco de dados;
+  - `JWT_SECRET` é a senha utilizada para criptografar dados sensíveis;
+  - `ADMIN_USER` e `PASSWORD` são os dados do administrados para ter acesso às rotas autenticadas;
+  - `EMAIL_USER`, `EMAIL_PASSWORD`, `EMAIL_HOST` e `EMAIL_PORT` são usados para realizar o disparo de emails.
+
+- Será necessário executar o Prisma para criar o banco de dados e as tabelas necessárias. Para isso, execute o comando: `npx prisma migrate dev`;
+- Para rodar o projeto em desenvolvimento, execute o comando `npm run start:dev`.
+
+# Como rodar em produção
+- Buildar o projeto com `docker build --network host -t your-nestjs-app .`;
+- Subir a plataforma com `docker run --network host -p 3000:3000 -d your-nestjs-app`.
